@@ -40,7 +40,7 @@ export default function SidebarDemo({children}:Readonly<{children:React.ReactNod
   return (
     <div
       className={cn(
-        "flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+        "flex w-full flex-col overflow-hidden border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
         "h-screen",
       )}
     >
@@ -78,7 +78,7 @@ export default function SidebarDemo({children}:Readonly<{children:React.ReactNod
 
 export const Logo = () => {
   return (
-    <a href="#" className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
+    <a href="#" className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black mt-10">
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
       <motion.span
         initial={{ opacity: 0 }}

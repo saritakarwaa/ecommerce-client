@@ -5,8 +5,8 @@ import SidebarDemo from "@/components/sidebar-demo";
 function App() {
 
   return (
-    <div className='w-screen h-full overflow-x-hidden'>
-      <SidebarDemo />
+    <div>
+      <SidebarDemo ><h1>content</h1></SidebarDemo>
     </div>
   )
 }

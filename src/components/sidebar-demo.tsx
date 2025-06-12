@@ -1,5 +1,7 @@
 
-import { useState } from "react";
+"use client";
+
+import  { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
   IconArrowLeft,
@@ -8,45 +10,38 @@ import {
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export default function SidebarDemo() {
+export default function SidebarDemo({children}:Readonly<{children:React.ReactNode}>) {
   const links = [
     {
       label: "Admin",
       href: "/admin",
-      icon: (
-        //<IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-        <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
+      //icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Seller",
       href: "/seller",
-      icon: (
-        <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
+      icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "User",
       href: "/user",
-      icon: (
-        //<IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-        <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
+      icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      //icon: <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Logout",
       href: "#",
-      icon: (
-        <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
+      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
   ];
   const [open, setOpen] = useState(false);
+
   return (
     <div
       className={cn(
-        "flex w-full h-full flex-row overflow-hidden bg-gray-100 dark:bg-neutral-800",
-        "h-full"
+        "flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+        "h-screen",
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
@@ -59,35 +54,31 @@ export default function SidebarDemo() {
               ))}
             </div>
           </div>
-          <div>
-            <SidebarLink
-              link={{
-                label: "User",
-                href: "#",
-                icon: (
-                  <img
-                    src="https://assets.aceternity.com/manu.png"
-                    className="h-7 w-7 shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
-                  />
-                ),
-              }}
-            />
-          </div>
+          <SidebarLink
+            link={{
+              label: "Manu Arora",
+              href: "#",
+              icon: (
+                <img
+                  src="https://assets.aceternity.com/manu.png"
+                  className="h-7 w-7 shrink-0 rounded-full"
+                  width={50}
+                  height={50}
+                  alt="Avatar"
+                />
+              ),
+            }}
+          />
         </SidebarBody>
       </Sidebar>
-      <Dashboard />
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   );
 }
+
 export const Logo = () => {
   return (
-    <a
-      href="#"
-      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
-    >
+    <a href="#" className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
       <motion.span
         initial={{ opacity: 0 }}
@@ -99,40 +90,12 @@ export const Logo = () => {
     </a>
   );
 };
+
 export const LogoIcon = () => {
   return (
-    <a
-      href="#"
-      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
-    >
+    <a href="#" className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
     </a>
-  );
-};
-
-// Dummy dashboard component with content
-const Dashboard = () => {
-  return (
-    <div className="flex flex-1">
-      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
-        <div className="flex gap-2">
-          {[...new Array(4)].map((idx) => (
-            <div
-              key={"first-array-demo-1" + idx}
-              className="h-20 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
-            ></div>
-          ))}
-        </div>
-        <div className="flex flex-1 gap-2">
-          {[...new Array(2)].map(( idx) => (
-            <div
-              key={"second-array-demo-1" + idx}
-              className="h-full w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
-            ></div>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 };
 

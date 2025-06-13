@@ -3,6 +3,7 @@ import './App.css'
 import SidebarDemo from "@/components/sidebar-demo";
 import SellerProducts from "./components/seller/SellerProducts";
 import LoginCard from "./components/LoginCard";
+import SignupCard from "./components/SignUpCard";
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LoginCard />} />
+          <Route path="/register" element={<SignupCard />} />
           <Route
           path="/seller"
           element={

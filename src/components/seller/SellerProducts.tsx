@@ -17,7 +17,6 @@ const SellerProducts:React.FC=()=>{
     const [products,setProducts]=useState<Product[]>([])
     const [loading,setLoading]=useState(true)
 
-
     useEffect(()=>{
         const fetchProducts=async()=>{
             const sellerId = "e393740d-d779-4818-9459-9e502ef2e64b";

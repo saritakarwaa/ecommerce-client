@@ -1,19 +1,49 @@
-import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import AuthForm from "./ui/AuthForm";
 import { BorderBeam } from "./border-beam";
 
+
 export default function LoginCard() {
+  const baseUrl = "http://localhost:3000";
+
+  const handleLogin = async (data: Record<string, string>) => {
+    console.log("Login payload:", data);
+    try{
+      const response=await fetch(`${baseUrl}/api/admins/login`,{
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      })
+      const result=await response.json()
+      if (response.ok) {
+        localStorage.setItem("token", result.token);
+        localStorage.setItem("userId",result.id)
+        localStorage.setItem("role", result.role); 
+        console.log("Login successful", result);
+      }
+      else{
+        alert(result.error)
+      }
+    }
+    catch (err: any) {
+      alert(err.message || "An error occurred during login.");
+    }
+  };
+
   return (
-    <Card className="relative w-[350px] overflow-hidden">
+    <div className="flex h-screen w-screen items-center justify-center bg-gray-100 dark:bg-neutral-900 p-4">
+    <Card className="relative w-[350px] overflow-hidden p-4 shadow-xl">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>
@@ -21,28 +51,12 @@ export default function LoginCard() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="Enter your email" />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-              />
-            </div>
-          </div>
-        </form>
+        <AuthForm type="login" onSubmit={handleLogin} />
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline">Register</Button>
-        <Button>Login</Button>
-      </CardFooter>
-      <BorderBeam duration={8} size={100} />
+       <div className="absolute inset-0 pointer-events-none">
+          <BorderBeam duration={8} size={100} />
+        </div>
     </Card>
+    </div>
   );
 }

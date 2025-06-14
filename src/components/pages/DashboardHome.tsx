@@ -17,7 +17,14 @@ const DashboardHome = () => {
     const [adminCount, setAdminCount] = useState(0);
     const [userCount, setUserCount] = useState(0);
     const [sellerCount,setSellerCount]=useState(0)
-     const [topProducts, setTopProducts] = useState<Product[]>([]);
+    const [topProducts, setTopProducts] = useState<Product[]>([]);
+    const [orderStatusCounts, setOrderStatusCounts] = useState({
+      PENDING: 0,
+      PROCESSING: 0,
+      SHIPPED: 0,
+      DELIVERED: 0,
+      CANCELLED: 0,
+    });
 
    const token = localStorage.getItem("token");
   const config = {
@@ -36,6 +43,9 @@ const DashboardHome = () => {
 
             const topProducts=await axios.get(`${baseUrl}/api/products/top-selling`)
             setTopProducts(topProducts.data)
+
+            const orderStatus=await axios.get(`${baseUrl}/api/orders/status-counts`,config)
+            setOrderStatusCounts(orderStatus.data.statusCounts)
         }
         catch (error) {
             console.error("Error fetching dashboard data:", error);
@@ -83,6 +93,16 @@ const DashboardHome = () => {
         </div>
       </div>
 
+      <div>
+    <h2 className="text-xl font-semibold mt-8 mb-2">📦 Orders Status Summary</h2>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <Widget label="Pending" value={orderStatusCounts.PENDING} />
+      <Widget label="Processing" value={orderStatusCounts.PROCESSING} />
+      <Widget label="Shipped" value={orderStatusCounts.SHIPPED} />
+      <Widget label="Delivered" value={orderStatusCounts.DELIVERED} />
+      <Widget label="Cancelled" value={orderStatusCounts.CANCELLED} />
+    </div>
+    </div>
     </div>
   )
 }

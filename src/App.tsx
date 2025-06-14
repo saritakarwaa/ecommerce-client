@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route,Routes } from "react-router-dom";
 import './App.css'
 import SidebarDemo from "@/components/sidebar-demo";
-import SellerProducts from "./components/seller/SellerProducts";
+import DashboardHome from "./components/pages/DashboardHome";
 import LoginCard from "./components/LoginCard";
 import SignupCard from "./components/SignUpCard";
 
@@ -14,11 +14,11 @@ function App() {
           <Route path="/" element={<LoginCard />} />
           <Route path="/register" element={<SignupCard />} />
           <Route
-          path="/seller"
+          path="/dashboard"
           element={
-            <SidebarDemo>
-              <SellerProducts />
-            </SidebarDemo>
+          <SidebarDemo>
+              <DashboardHome />
+          </SidebarDemo>
           }
         />
       </Routes>
@@ -26,5 +26,4 @@ function App() {
     </div>
   )
 }
-
 export default App

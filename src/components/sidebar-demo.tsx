@@ -9,19 +9,33 @@ import {
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import SellerProducts from "./pages/SellerProducts";
+
 
 export default function SidebarDemo({children}:Readonly<{children:React.ReactNode}>) {
+  
   const links = [
     {
       label: "Admin",
       href: "/admin",
       //icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
       icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      children: [
+      { label: "Dashboard", href: "/admin/dashboard" },
+      { label: "Settings", href: "/admin/settings" },
+      { label:"All admins", href:"/admin/all"},
+      { label: "Delete Admin", href:"/admin/delete"}
+      ],
     },
     {
       label: "Seller",
       href: "/seller",
       icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      children: [
+      { label:"All sellers", href:"all-sellers"},
+      { label: "Seller Products", href: "seller-products" },
+      { label: "Settings", href: "/admin/settings" },
+      ],
     },
     {
       label: "User",
@@ -36,22 +50,36 @@ export default function SidebarDemo({children}:Readonly<{children:React.ReactNod
     },
   ];
   const [open, setOpen] = useState(false);
+  const [selectedView, setSelectedView] = useState("dashboard");
 
+   const renderView = () => {
+    switch (selectedView) {
+      case "seller-products":
+        return <SellerProducts />;
+      case "seller-settings":
+        return <div className="p-4">Seller Settings Coming Soon</div>;
+      default:
+        return children;
+    }
+  };
   return (
     <div
       className={cn(
         "flex w-full flex-col overflow-hidden border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
-        "h-screen",
+        "h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-            {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} />
-              ))}
+                  <SidebarLink
+                    key={idx}
+                    link={link}
+                    onChildClick={(href) => setSelectedView(href)}
+                  />
+                ))}
             </div>
           </div>
           <SidebarLink
@@ -71,7 +99,7 @@ export default function SidebarDemo({children}:Readonly<{children:React.ReactNod
           />
         </SidebarBody>
       </Sidebar>
-      <main className="flex-1 overflow-auto">{children}</main>
+      <main className="flex-1 overflow-auto">{renderView()}</main>
     </div>
   );
 }

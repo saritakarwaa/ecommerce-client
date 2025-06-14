@@ -5,11 +5,16 @@ import type React from "react"
 import { useState, createContext, useContext } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { IconMenu2, IconX } from "@tabler/icons-react"
+import { ChevronDown } from "lucide-react";
 
 interface Links {
   label: string
   href: string
   icon: React.JSX.Element | React.ReactNode
+  children?: {
+    label: string;
+    href: string;
+  }[];
 }
 
 interface SidebarContextProps {
@@ -41,8 +46,8 @@ export const SidebarProvider = ({
 }) => {
   const [openState, setOpenState] = useState(false)
 
-  const open = openProp !== undefined ? openProp : openState
-  const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState
+  const open = openProp ?? openState
+  const setOpen = setOpenProp ?? setOpenState
 
   return <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>{children}</SidebarContext.Provider>
 }
@@ -142,15 +147,30 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
 export const SidebarLink = ({
   link,
   className,
+  onClick,
+  onChildClick,
   ...props
 }: {
   link: Links
   className?: string
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
+  onChildClick?: (href: string) => void
 }) => {
   const { open, animate } = useSidebar()
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const hasChildren = link.children && link.children.length > 0;
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+     if (hasChildren) {
+      e.preventDefault()
+      setDropdownOpen(!dropdownOpen)
+    }
+    onClick?.(e)
+  };
   return (
+     <div className="w-full">
     <a
-      href={link.href}
+      href={link.href} onClick={handleClick}
       className={cn("flex items-center justify-start gap-2 group/sidebar py-2", className)}
       style={{
         display: "flex",
@@ -174,6 +194,7 @@ export const SidebarLink = ({
       }}
       {...props}
     >
+      <div className="flex items-center gap-2">
       {link.icon}
 
       <motion.span
@@ -185,6 +206,30 @@ export const SidebarLink = ({
       >
         {link.label}
       </motion.span>
+      </div>
+      {hasChildren && open && (
+          <ChevronDown
+            className={cn("h-4 w-4 text-neutral-500 transition-transform", dropdownOpen && "rotate-180")}
+          />
+        )}
     </a>
+     {hasChildren && dropdownOpen && (
+        <div className="ml-8 mt-1 flex flex-col gap-1">
+          {link.children!.map((child, idx) => (
+            <a
+              key={idx}
+              href="#"
+               onClick={(e) => {
+                e.preventDefault();
+                onChildClick?.(child.href); 
+              }}
+              className="text-sm text-neutral-700 dark:text-neutral-300 px-2 py-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 transition"
+            >
+              {child.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }

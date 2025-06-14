@@ -7,10 +7,12 @@ import {
 } from "./ui/card";
 import AuthForm from "./ui/AuthForm";
 import { BorderBeam } from "./border-beam";
+import { useNavigate } from "react-router-dom";
 
 
 export default function LoginCard() {
   const baseUrl = "http://localhost:3000";
+  const navigate=useNavigate()
 
   const handleLogin = async (data: Record<string, string>) => {
     console.log("Login payload:", data);
@@ -31,6 +33,7 @@ export default function LoginCard() {
         localStorage.setItem("userId",result.id)
         localStorage.setItem("role", result.role); 
         console.log("Login successful", result);
+         navigate("/dashboard")
       }
       else{
         alert(result.error)

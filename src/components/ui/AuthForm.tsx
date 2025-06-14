@@ -19,7 +19,6 @@ export default function AuthForm({type,onSubmit,loading=false}:AuthFormProps){
         data.forEach((value,key)=>{
             payload[key]=value.toString()
         })
-
         onSubmit(payload)
     }
     return(

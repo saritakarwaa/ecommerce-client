@@ -9,6 +9,7 @@ type WidgetProps = {
   value: string | number;
    icon?: "admin" | "seller" | "user";
   color?: "blue" | "green" | "pink";
+  showIcon?:boolean;
 };
 const iconMap = {
   admin: <IconUserBolt size={32} className="text-white" />,
@@ -21,7 +22,7 @@ const bgMap = {
   pink: "bg-gradient-to-r from-pink-400 to-pink-500",
 };
 
-export default function Widget({ label, value,icon="admin",color="blue" }:WidgetProps) {
+export default function Widget({ label, value,icon="admin",color="blue",showIcon=true }:WidgetProps) {
   return (
      <div
       className={`flex justify-between items-center p-6 rounded-lg shadow-md text-white ${bgMap[color]}`}
@@ -30,7 +31,7 @@ export default function Widget({ label, value,icon="admin",color="blue" }:Widget
         <p className="text-md font-semibold">{label}</p>
         <p className="text-3xl font-bold">{value}</p>
       </div>
-      <div>{iconMap[icon]}</div>
+       {showIcon && icon && iconMap[icon] && <div>{iconMap[icon]}</div>}
     </div>
   );
 }

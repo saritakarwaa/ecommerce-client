@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios'
 import Widget from '../ui/widget';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 type Product = {
   id: number;
@@ -10,6 +11,12 @@ type Product = {
   seller: {
     name: string;
   };
+};
+type Seller = {
+  id: string;
+  name: string;
+  email: string;
+  updatedAt: string;
 };
 
 const DashboardHome = () => {
@@ -25,8 +32,11 @@ const DashboardHome = () => {
       DELIVERED: 0,
       CANCELLED: 0,
     });
+    const [recentSellers, setRecentSellers] = useState<Seller[]>([]);
+    const [monthlyRevenue, setMonthlyRevenue] = useState<{ month: string; total: number }[]>([]);
 
-   const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  console.log("Token:",token)
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -46,6 +56,25 @@ const DashboardHome = () => {
 
             const orderStatus=await axios.get(`${baseUrl}/api/orders/status-counts`,config)
             setOrderStatusCounts(orderStatus.data.statusCounts)
+
+            const recentSellersRes = await axios.get(`${baseUrl}/api/sellers/recent-approved`);
+            setRecentSellers(recentSellersRes.data.sellers);
+
+            const transactionsRes=await axios.get(`${baseUrl}/api/transactions`)
+            const transactions=transactionsRes.data
+            const revenueMap: { [month: string]: number } = {};
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            transactions.forEach((txn: any) => {
+              const date = new Date(txn.createdAt);
+              const month = monthNames[date.getMonth()];
+              revenueMap[month] = (revenueMap[month] || 0) + txn.amount;
+            });
+            const monthly=monthNames.map(month=>({
+              month,total:revenueMap[month] ||0
+            }))
+            setMonthlyRevenue(monthly);
+            
         }
         catch (error) {
             console.error("Error fetching dashboard data:", error);
@@ -96,13 +125,60 @@ const DashboardHome = () => {
       <div>
     <h2 className="text-xl font-semibold mt-8 mb-2">📦 Orders Status Summary</h2>
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-      <Widget label="Pending" value={orderStatusCounts.PENDING} />
-      <Widget label="Processing" value={orderStatusCounts.PROCESSING} />
-      <Widget label="Shipped" value={orderStatusCounts.SHIPPED} />
-      <Widget label="Delivered" value={orderStatusCounts.DELIVERED} />
-      <Widget label="Cancelled" value={orderStatusCounts.CANCELLED} />
+      <Widget label="Pending" value={orderStatusCounts.PENDING} showIcon={false} />
+      <Widget label="Processing" value={orderStatusCounts.PROCESSING} showIcon={false} />
+      <Widget label="Shipped" value={orderStatusCounts.SHIPPED} showIcon={false} />
+      <Widget label="Delivered" value={orderStatusCounts.DELIVERED} showIcon={false} />
+      <Widget label="Cancelled" value={orderStatusCounts.CANCELLED} showIcon={false} />
     </div>
     </div>
+
+    <div className="mt-10">
+        <h2 className="text-2xl font-semibold mb-4">Recently Approved Sellers</h2>
+        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-neutral-800">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Approved On</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200 dark:bg-neutral-900 dark:divide-gray-700">
+              {recentSellers.map((seller) => (
+                <tr key={seller.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{seller.name}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{seller.email}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                    {new Date(seller.updatedAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+              {recentSellers.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="text-center py-4 text-sm text-gray-400">
+                    No recently approved sellers
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="mt-10 p-6 bg-white rounded-lg shadow">
+      <h2 className="text-2xl font-semibold mb-4">Revenue Analytics</h2>
+      <ResponsiveContainer width="100%" height={350}>
+        <BarChart data={monthlyRevenue}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" />
+          <YAxis tickFormatter={(v) => `₹${v}`} />
+          <Tooltip formatter={(value: number) => `₹${value}`} />
+          <Bar dataKey="total" fill="#2d6a4f" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+
     </div>
   )
 }

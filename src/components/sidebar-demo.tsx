@@ -5,43 +5,41 @@ import  { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
   IconArrowLeft,
-  IconUserBolt,
+  IconUserBolt,IconShoppingCart
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import SellerProducts from "./pages/SellerProducts";
+import { Outlet, useNavigate } from "react-router-dom";
 
-
-export default function SidebarDemo({children}:Readonly<{children:React.ReactNode}>) {
+export default function SidebarDemo() {
   
   const links = [
     {
-      label: "Admin",
-      href: "/admin",
+      label: "Admin Management",
+      href: "/dashboard/admin",
       //icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
       icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-      children: [
-      { label: "Dashboard", href: "/admin/dashboard" },
-      { label: "Settings", href: "/admin/settings" },
-      { label:"All admins", href:"/admin/all"},
-      { label: "Delete Admin", href:"/admin/delete"}
-      ],
     },
     {
-      label: "Seller",
-      href: "/seller",
+      label: "Seller Management",
+      href: "/dashboard/seller",
       icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-      children: [
-      { label:"All sellers", href:"all-sellers"},
-      { label: "Seller Products", href: "seller-products" },
-      { label: "Settings", href: "/admin/settings" },
-      ],
     },
     {
-      label: "User",
-      href: "/user",
+      label: "User Management",
+      href: "/dashboard/users",
       icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
       //icon: <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Order Management",
+      href: "/dashboard/orders",
+      icon: <IconShoppingCart className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Product Management",
+      href: "/dashboard/products",
+      icon: <IconShoppingCart className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Logout",
@@ -50,18 +48,8 @@ export default function SidebarDemo({children}:Readonly<{children:React.ReactNod
     },
   ];
   const [open, setOpen] = useState(false);
-  const [selectedView, setSelectedView] = useState("dashboard");
+  const navigate = useNavigate();
 
-   const renderView = () => {
-    switch (selectedView) {
-      case "seller-products":
-        return <SellerProducts />;
-      case "seller-settings":
-        return <div className="p-4">Seller Settings Coming Soon</div>;
-      default:
-        return children;
-    }
-  };
   return (
     <div
       className={cn(
@@ -77,7 +65,10 @@ export default function SidebarDemo({children}:Readonly<{children:React.ReactNod
                   <SidebarLink
                     key={idx}
                     link={link}
-                    onChildClick={(href) => setSelectedView(href)}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        navigate(link.href)
+                      }}
                   />
                 ))}
             </div>
@@ -99,7 +90,7 @@ export default function SidebarDemo({children}:Readonly<{children:React.ReactNod
           />
         </SidebarBody>
       </Sidebar>
-      <main className="flex-1 overflow-auto">{renderView()}</main>
+      <main className="flex-1 overflow-auto"> <Outlet /></main>
     </div>
   );
 }

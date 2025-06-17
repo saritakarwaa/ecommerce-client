@@ -16,16 +16,12 @@ const iconMap = {
   seller: <IconShoppingCart size={32} className="text-white" />,
   user: <IconUser size={32} className="text-white" />,
 };
-// const bgMap = {
-//   blue: "bg-gradient-to-r from-blue-400 to-blue-500",
-//   green: "bg-gradient-to-r from-green-400 to-teal-400",
-//   pink: "bg-gradient-to-r from-pink-400 to-pink-500",
-// };
+
 const bgMap = {
-  blue: "bg-[#75DDDD] text-black",    // sky teal
-  green: "bg-[#09BC8A] text-black",   // mint green
-  pink: "bg-[#508991] text-black",    // sage blue
-  dark: "bg-[#172A3A] text-white",    // deep navy
+  blue: "bg-[#75DDDD] text-black",    
+  green: "bg-[#09BC8A] text-black",   
+  pink: "bg-[#508991] text-black",    
+  dark: "bg-[#172A3A] text-white",    
   teal: "bg-[#004346] text-white",
 };
 

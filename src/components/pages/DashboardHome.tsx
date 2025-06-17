@@ -97,16 +97,16 @@ const DashboardHome = () => {
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-neutral-800">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Seller</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Sold</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Product</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Seller</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Price</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Total Sold</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200 dark:bg-neutral-900 dark:divide-gray-700">
+            <tbody className=" divide-y divide-gray-200 dark:bg-neutral-900 dark:divide-gray-700">
               {topProducts.map(product => (
                 <tr key={product.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{product.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#344E41] dark:text-white">{product.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{product.seller?.name || "N/A"}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">₹{product.price}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{product.totalSold}</td>
@@ -125,11 +125,11 @@ const DashboardHome = () => {
       <div>
     <h2 className="text-xl font-semibold mt-8 mb-2">📦 Orders Status Summary</h2>
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-      <Widget label="Pending" value={orderStatusCounts.PENDING} showIcon={false} />
-      <Widget label="Processing" value={orderStatusCounts.PROCESSING} showIcon={false} />
-      <Widget label="Shipped" value={orderStatusCounts.SHIPPED} showIcon={false} />
-      <Widget label="Delivered" value={orderStatusCounts.DELIVERED} showIcon={false} />
-      <Widget label="Cancelled" value={orderStatusCounts.CANCELLED} showIcon={false} />
+      <Widget label="Pending" value={orderStatusCounts.PENDING} color="pink" showIcon={false} />
+      <Widget label="Processing" value={orderStatusCounts.PROCESSING} color="blue" showIcon={false} />
+      <Widget label="Shipped" value={orderStatusCounts.SHIPPED} color="green" showIcon={false} />
+      <Widget label="Delivered" value={orderStatusCounts.DELIVERED} color="teal" showIcon={false} />
+      <Widget label="Cancelled" value={orderStatusCounts.CANCELLED} color="dark" showIcon={false} />
     </div>
     </div>
 
@@ -137,17 +137,17 @@ const DashboardHome = () => {
         <h2 className="text-2xl font-semibold mb-4">Recently Approved Sellers</h2>
         <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-neutral-800">
+            <thead className="bg-gray-50 dark:bg-neutral-800 bg-[#75DDDD]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Approved On</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Approved On</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200 dark:bg-neutral-900 dark:divide-gray-700">
+            <tbody className="divide-y divide-gray-200 dark:bg-neutral-900 dark:divide-gray-700">
               {recentSellers.map((seller) => (
                 <tr key={seller.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{seller.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black dark:text-white">{seller.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{seller.email}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                     {new Date(seller.updatedAt).toLocaleDateString()}
@@ -166,15 +166,15 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      <div className="mt-10 p-6 bg-white rounded-lg shadow">
+      <div className="mt-10 p-6 rounded-lg shadow">
       <h2 className="text-2xl font-semibold mb-4">Revenue Analytics</h2>
       <ResponsiveContainer width="100%" height={350}>
         <BarChart data={monthlyRevenue}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis tickFormatter={(v) => `₹${v}`} />
+          <XAxis dataKey="month" tick={{fill:'black'}} />
+          <YAxis tickFormatter={(v) => `₹${v}`} tick={{fill:'black'}} />
           <Tooltip formatter={(value: number) => `₹${value}`} />
-          <Bar dataKey="total" fill="#2d6a4f" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="total" fill="#004346" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

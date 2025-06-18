@@ -57,7 +57,7 @@ export default function ProductManagementPage() {
     fetchProducts();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center mt-10 text-508991">Loading...</div>;
 
   return (
     <div className="p-6 space-y-4">

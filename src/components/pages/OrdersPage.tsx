@@ -1,9 +1,15 @@
-// src/pages/dashboard/orders.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { StatusUpdater
-    
- } from "../StatusUpdater";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table"; 
+import { StatusUpdater } from "../StatusUpdater";
+
 type Order = {
   id: string;
   amount: number;
@@ -24,9 +30,6 @@ type Order = {
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-//   const token = localStorage.getItem("token");
-//   const config = { headers: { Authorization: `Bearer ${token}` } };
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -51,37 +54,48 @@ const OrdersPage = () => {
       <input
         type="text"
         placeholder="Search by user name..."
-        className="mb-4 px-4 py-2 border rounded"
+        className="mb-4 px-4 py-2 border rounded w-full max-w-md"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      <table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="px-4 py-2 text-left">Order ID</th>
-            <th className="px-4 py-2 text-left">User</th>
-            <th className="px-4 py-2 text-left">Seller</th>
-            <th className="px-4 py-2 text-left">Amount</th>
-            <th className="px-4 py-2 text-left">Status</th>
-            <th className="px-4 py-2 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredOrders.map((order) => (
-            <tr key={order.id} className="border-t">
-              <td className="px-4 py-2">{order.id}</td>
-              <td className="px-4 py-2">{order.user.name}</td>
-              <td className="px-4 py-2">{order.seller.name}</td>
-              <td className="px-4 py-2">₹{order.amount}</td>
-              <td className="px-4 py-2">{order.status}</td>
-              <td className="px-4 py-2">
-                <StatusUpdater orderId={order.id} currentStatus={order.status} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Order ID</TableHead>
+            <TableHead>User</TableHead>
+            <TableHead>Seller</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredOrders.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center text-gray-500">
+                No orders found.
+              </TableCell>
+            </TableRow>
+          ) : (
+            filteredOrders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell>{order.id}</TableCell>
+                <TableCell>{order.user.name}</TableCell>
+                <TableCell>{order.seller.name}</TableCell>
+                <TableCell>₹{order.amount}</TableCell>
+                <TableCell>{order.status}</TableCell>
+                <TableCell>
+                  <StatusUpdater
+                    orderId={order.id}
+                    currentStatus={order.status}
+                  />
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 };

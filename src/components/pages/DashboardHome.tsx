@@ -1,7 +1,15 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios'
 import Widget from '../ui/widget';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,Cell } from "recharts";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 
 type Product = {
   id: number;
@@ -35,13 +43,13 @@ const DashboardHome = () => {
     const [recentSellers, setRecentSellers] = useState<Seller[]>([]);
     const [monthlyRevenue, setMonthlyRevenue] = useState<{ month: string; total: number }[]>([]);
 
-  const token = localStorage.getItem("token");
-  console.log("Token:",token)
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+    const token = localStorage.getItem("token");
+    console.log("Token:",token)
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
   useEffect(()=>{
     const fetchData=async()=>{
@@ -84,46 +92,59 @@ const DashboardHome = () => {
   },[])
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <h1 className="text-3xl font-bold ">Admin Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Widget label="Total Admins" value={adminCount} icon="admin" color="blue" />
         <Widget label="Total Sellers" value={sellerCount} icon="seller" color="green" />
         <Widget label="Total Users" value={userCount} icon="user" color="pink" />
       </div>
 
-       <div className="mt-10">
+      <div className="mt-10">
         <h2 className="text-2xl font-semibold mb-4">Top Selling Products</h2>
-        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-neutral-800">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Product</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Seller</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Total Sold</th>
-              </tr>
-            </thead>
-            <tbody className=" divide-y divide-gray-200 dark:bg-neutral-900 dark:divide-gray-700">
-              {topProducts.map(product => (
-                <tr key={product.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#344E41] dark:text-white">{product.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{product.seller?.name || "N/A"}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">₹{product.price}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{product.totalSold}</td>
-                </tr>
-              ))}
-              {topProducts.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="text-center py-4 text-sm text-gray-400">No data available</td>
-                </tr>
+        <div className="rounded-lg border border-gray-200 shadow-sm">
+          <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <TableHeader className="bg-gray-50 dark:bg-neutral-800">
+              <TableRow>
+                <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Product</TableHead>
+                <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Seller</TableHead>
+                <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Price</TableHead>
+                <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Total Sold</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="dark:bg-neutral-900 dark:divide-gray-700">
+              {topProducts.length > 0 ? (
+                topProducts.map((product, index) => (
+                  <TableRow
+                    key={product.id}
+                    className={`${
+                      index % 2 === 0
+                        ? "bg-white dark:bg-neutral-900"
+                        : "bg-gray-50 dark:bg-neutral-800"
+                    }`}
+                  >
+                    <TableCell className="px-6 py-4 font-medium text-[#344E41] dark:text-white">{product.name}</TableCell>
+                    <TableCell className="px-6 py-4 text-gray-600 dark:text-gray-300">
+                      {product.seller?.name || "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-gray-600 dark:text-gray-300">₹{product.price}</TableCell>
+                    <TableCell className="px-6 py-4 text-gray-600 dark:text-gray-300">{product.totalSold}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-4 text-gray-400">
+                    No data available
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 
+
       <div>
-    <h2 className="text-xl font-semibold mt-8 mb-2">📦 Orders Status Summary</h2>
+    <h2 className="text-xl font-semibold mt-8 mb-2">Orders Status Summary</h2>
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       <Widget label="Pending" value={orderStatusCounts.PENDING} color="pink" showIcon={false} />
       <Widget label="Processing" value={orderStatusCounts.PROCESSING} color="blue" showIcon={false} />
@@ -133,48 +154,77 @@ const DashboardHome = () => {
     </div>
     </div>
 
-    <div className="mt-10">
+      
+
+      <div className="mt-10">
         <h2 className="text-2xl font-semibold mb-4">Recently Approved Sellers</h2>
-        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-neutral-800 bg-[#75DDDD]">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase">Approved On</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:bg-neutral-900 dark:divide-gray-700">
-              {recentSellers.map((seller) => (
-                <tr key={seller.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black dark:text-white">{seller.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{seller.email}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                    {new Date(seller.updatedAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-              {recentSellers.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="text-center py-4 text-sm text-gray-400">
+        <div className="rounded-lg border border-gray-200 shadow-sm">
+          <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <TableHeader className="bg-[#75DDDD] dark:bg-neutral-800">
+              <TableRow>
+                <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Name</TableHead>
+                <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Email</TableHead>
+                <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Approved On</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="dark:bg-neutral-900 dark:divide-gray-700">
+              {recentSellers.length > 0 ? (
+                recentSellers.map((seller) => (
+                  <TableRow key={seller.id}>
+                    <TableCell className="px-6 py-4 font-medium text-black dark:text-white">{seller.name}</TableCell>
+                    <TableCell className="px-6 py-4 text-gray-600 dark:text-gray-300">{seller.email}</TableCell>
+                    <TableCell className="px-6 py-4 text-gray-600 dark:text-gray-300">
+                      {new Date(seller.updatedAt).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-4 text-gray-400">
                     No recently approved sellers
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
+
 
       <div className="mt-10 p-6 rounded-lg shadow">
       <h2 className="text-2xl font-semibold mb-4">Revenue Analytics</h2>
       <ResponsiveContainer width="100%" height={350}>
         <BarChart data={monthlyRevenue}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" tick={{fill:'black'}} />
-          <YAxis tickFormatter={(v) => `₹${v}`} tick={{fill:'black'}} />
-          <Tooltip formatter={(value: number) => `₹${value}`} />
-          <Bar dataKey="total" fill="#004346" radius={[4, 4, 0, 0]} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+          <XAxis 
+            dataKey="month" 
+            tick={{ fill: 'black' }}
+            axisLine={{ stroke: '#ccc' }}
+          />
+          <YAxis 
+            tickFormatter={(v) => `₹${v}`} 
+            tick={{ fill: 'black' }}
+            axisLine={{ stroke: '#ccc' }}
+          />
+          <Tooltip 
+            contentStyle={{
+              background: '#172A3A',
+              color: 'white',
+              borderRadius: '8px',
+              border: 'none'
+            }}
+            formatter={(value: number) => [`₹${value}`, "Revenue"]}
+          />
+          <Bar 
+            dataKey="total" 
+            fill="#004346" 
+            radius={[4, 4, 0, 0]}
+            animationDuration={1500}
+          >
+            {monthlyRevenue.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.total > 0 ? '#004346' : '#ccc'} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -160,7 +160,7 @@ const DashboardHome = () => {
         <h2 className="text-2xl font-semibold mb-4">Recently Approved Sellers</h2>
         <div className="rounded-lg border border-gray-200 shadow-sm">
           <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <TableHeader className="bg-[#75DDDD] dark:bg-neutral-800">
+            <TableHeader className="dark:bg-neutral-800">
               <TableRow>
                 <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Name</TableHead>
                 <TableHead className="px-6 py-3 text-xs font-medium text-black uppercase">Email</TableHead>
